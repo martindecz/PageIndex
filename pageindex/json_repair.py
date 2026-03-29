@@ -30,8 +30,9 @@ def repair_json(text):
     except (json.JSONDecodeError, ValueError):
         pass
 
-    # 2) Fix trailing commas:  ,] -> ]  ,} -> }
-    cleaned = re.sub(r',\s*([}\]])', r'\1', text)
+    # 2) Fix invalid unicode escapes (\uXXXX with non-hex chars) and trailing commas
+    cleaned = re.sub(r'\\u(?![0-9a-fA-F]{4})[^"]{0,4}', '', text)
+    cleaned = re.sub(r',\s*([}\]])', r'\1', cleaned)
     try:
         return json.loads(cleaned)
     except (json.JSONDecodeError, ValueError):
