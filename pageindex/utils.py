@@ -126,7 +126,7 @@ def extract_json(content):
             # Local patch: robust JSON repair for malformed LLM output
             from .json_repair import repair_json
             repaired = repair_json(json_content)
-            if repaired is not None:
+            if isinstance(repaired, (dict, list)):
                 logging.info("JSON recovered via json_repair")
                 return repaired
             logging.error("Failed to parse JSON even after cleanup")

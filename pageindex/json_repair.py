@@ -26,7 +26,9 @@ def repair_json(text):
     try:
         decoder = json.JSONDecoder()
         result, _ = decoder.raw_decode(text.strip())
-        return result
+        # Only return dict/list — callers expect these types
+        if isinstance(result, (dict, list)):
+            return result
     except (json.JSONDecodeError, ValueError):
         pass
 
