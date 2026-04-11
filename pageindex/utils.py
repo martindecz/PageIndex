@@ -40,10 +40,11 @@ def llm_completion(model, prompt, chat_history=None, return_finish_reason=False)
                 model=model,
                 messages=messages,
                 temperature=0,
+                max_tokens=8192,
             )
             content = response.choices[0].message.content
             if return_finish_reason:
-                finish_reason = "max_output_reached" if response.choices[0].finish_reason == "length" else "finished"
+                fr = response.choices[0].finish_reason; finish_reason = "finished" if fr in ("stop", None) else "max_output_reached"
                 return content, finish_reason
             return content
         except Exception as e:
@@ -70,6 +71,7 @@ async def llm_acompletion(model, prompt):
                 model=model,
                 messages=messages,
                 temperature=0,
+                max_tokens=8192,
             )
             return response.choices[0].message.content
         except Exception as e:
